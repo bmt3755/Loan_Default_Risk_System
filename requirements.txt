@@ -1,0 +1,14 @@
+# Loan Default Risk Monitor — runtime dependencies
+#
+# Versions are intentionally left unpinned: the dependencies were not installed
+# in the local .venv at authoring time, so no exact versions could be captured
+# honestly. After installing, lock the versions you tested against with:
+#
+#     pip freeze > requirements.txt
+#
+# Tested with Python 3.12.
+
+langgraph        # graph orchestration (fan-out / fan-in / sequential nodes)
+openai           # LLM client — calls gpt-4o-mini for the checkers and sequential agents
+pydantic         # input validation + structured-output validation
+langsmith        # tracing / observability (@traceable); optional at runtime

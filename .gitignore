@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Secrets & local environment  —  NEVER commit these
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# ---------------------------------------------------------------------------
+# Tooling / assistant config & personal working notes  —  kept private
+# ---------------------------------------------------------------------------
+.claude/
+
+# Interview-prep / planning / learning notes (not part of the shipped project)
+master.md
+learning_checklist.md
+loan_default_framework.md
+
+# ---------------------------------------------------------------------------
+# Python build / cache artifacts
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / type / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local databases / stores
+*.db
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# ---------------------------------------------------------------------------
+# OS / editor noise
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
