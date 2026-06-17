@@ -25,7 +25,7 @@ The whole system is a single compiled LangGraph state machine. A **supervisor** 
 
 <p align="center">
   <a href="docs/system_flow.png">
-    <img src="docs/system_flow.png" alt="System flow diagram" width="640">
+    <img src="docs/system_flow.png" alt="System flow diagram" width="420">
   </a>
   <br>
   <em>High-level system flow — click to enlarge</em>
@@ -33,7 +33,7 @@ The whole system is a single compiled LangGraph state machine. A **supervisor** 
 
 <p align="center">
   <a href="docs/detailed_flow.png">
-    <img src="docs/detailed_flow.png" alt="Detailed flow diagram" width="640">
+    <img src="docs/detailed_flow.png" alt="Detailed flow diagram" width="520">
   </a>
   <br>
   <em>Detailed flow with validation, fallbacks, and thresholds — click to enlarge</em>
