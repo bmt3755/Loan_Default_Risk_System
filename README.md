@@ -2,7 +2,7 @@
 
 A multi-agent **loan-default risk monitor** built on [LangGraph](https://github.com/langchain-ai/langgraph). Given a borrower's financial profile, it fans out to **five parallel LLM "checker" agents**, aggregates their scores with a **deterministic, no-LLM calculator**, then runs a short **sequential explain → recommend pipeline** to produce an **auditable risk rating, a plain-English explanation, and a recommended action** for a bank's loan-review team.
 
-> **Tech:** Python 3.12 · LangGraph · OpenAI (`gpt-4o-mini`) · Pydantic · LangSmith (tracing)
+> **Tech:** Python 3.12 · LangGraph · OpenAI LLM · Pydantic · LangSmith (tracing)
 
 ---
 
@@ -79,7 +79,7 @@ All five inherit from **`BaseChecker`** (`base_checker.py`), which centralises e
 | External Signals | `external_signals.py` | Employment status + region |
 | Debt-to-Income | `debt_to_income.py` | DTI ratio (computed in Python, then interpreted) |
 
-Each checker calls `gpt-4o-mini` in **JSON mode** at **temperature 0.1** (for repeatable scoring), with a **30 s timeout** and a **300-token cap**. The raw response is validated by Pydantic (`score` ∈ 1–10, `label` ∈ {low, medium, high}, non-empty `reason`). **`run()` never raises** — any failure returns the conservative fallback result.
+Each checker calls the LLM in **JSON mode** at **temperature 0.1** (for repeatable scoring), with a **30 s timeout** and a **300-token cap**. The raw response is validated by Pydantic (`score` ∈ 1–10, `label` ∈ {low, medium, high}, non-empty `reason`). **`run()` never raises** — any failure returns the conservative fallback result.
 
 ### Risk Calculator (`src/calculator/risk_calculator.py`)
 **Pure logic, no LLM, no network.** It collects only the checkers that succeeded with an in-range score, averages them, and maps the average to a rating:
@@ -95,7 +95,7 @@ Each checker calls `gpt-4o-mini` in **JSON mode** at **temperature 0.1** (for re
 If **3 or more** checkers failed, it sets `human_review_required = true`.
 
 ### Sequential pipeline (`src/sequential/`)
-- **`explanation_generator.py`** — asks `gpt-4o-mini` for a 6-field structured JSON summary (one sentence per signal + an overall conclusion), validates all six fields, and assembles a plain-English explanation. On any failure it builds a **template fallback** from the checker reasons already in state.
+- **`explanation_generator.py`** — asks the LLM for a 6-field structured JSON summary (one sentence per signal + an overall conclusion), validates all six fields, and assembles a plain-English explanation. On any failure it builds a **template fallback** from the checker reasons already in state.
 - **`action_recommender.py`** — first picks a **rule-based default** action from the rating (`STABLE → do_nothing`, `WATCH → send_reminder`, `AT_RISK → offer_payment_plan`, `CRITICAL → escalate_to_collections`), then asks the LLM whether to override it. The LLM may only choose from the four allowed actions and only overrides given clear, specific evidence; on any failure the rule-based default stands.
 
 ### Entry point (`run.py`)
@@ -108,7 +108,7 @@ Loads `.env` (no extra dependency), fails fast if `OPENAI_API_KEY` is missing, r
 | Concern | Choice |
 |---|---|
 | Orchestration | LangGraph (`StateGraph`, parallel fan-out / fan-in, sequential edges) |
-| LLM | OpenAI `gpt-4o-mini`, JSON mode, low temperature |
+| LLM | OpenAI Chat Completions API, JSON mode, low temperature |
 | Validation | Pydantic (input model + every LLM response) |
 | Observability | LangSmith `@traceable` on each LLM node (optional) |
 | Language | Python 3.12, standard library logging |
